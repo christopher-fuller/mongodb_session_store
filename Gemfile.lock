@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mongodb_session_store (0.0.1)
+    mongodb_session_store (0.0.2)
       mongo
       rails (~> 3.1.3)
 
