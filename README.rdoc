@@ -56,4 +56,4 @@ See MIT-LICENSE for details.
 
 == Copyright
 
-Copyright (c) 2012 Chris Fuller.
+Copyright (c) 2012 Christopher Fuller.
