@@ -12,7 +12,7 @@ Rails must already be configured for MongoDB. Using a MongoDB object mapper (ODM
 
 == Configuration
 
-<em>Step 1) Update GemFile</em>
+<em>Step 1) Update Gemfile</em>
 
 Add to Gemfile:
 
