@@ -1,6 +1,6 @@
 = MongoDBSessionStore
 
-Stores Rails sessions in a MongoDB[http://mongodb.org/] collection. Clean code, thoughtful customization, optional garbage-collection. Use with or without a MongoDB object mapper (ODM).
+Stores Rails sessions in a MongoDB[http://mongodb.org/] with configurable options including optional garbage-collection. Use with or without a MongoDB object mapper (ODM).
 
 == Prerequisites
 
