@@ -1,16 +1,18 @@
-= mongodb_session_store
+= MongoDBSessionStore
 
-Stores Rails sessions in a MongoDB[http://mongodb.org/] collection. A MongoDB object mapper (ODM) is not required and the MongoDB collection name and key names are customizable. Also includes a Rake task for dropping the MongoDB collection used for storing the Rails sessions.
+== Description
+
+Stores Rails sessions in a MongoDB[http://mongodb.org/] collection. Clean code, thoughtful customization, optional garbage-collection. Use with or without a MongoDB object mapper (ODM).
 
 == Prerequisites
 
-Rails must already be configured for MongoDB. Using a MongoDB object mapper (ODM), such as MongoMapper[http://mongomapper.com/] or Mongoid[http://mongoid.org/], is entirely optional.
+Rails must already be configured for MongoDB. Using an object mapper (ODM), such as MongoMapper[http://mongomapper.com/] or Mongoid[http://mongoid.org/], is entirely optional.
 
 == Installation
 
-  gem install mongodb_session_store
+  $ gem install mongodb_session_store
 
-== Configuration
+== Rails Configuration
 
 <em>Step 1) Update Gemfile</em>
 
@@ -20,20 +22,20 @@ Add to Gemfile:
 
 <em>Step 2) Specify database</em>
 
-Provide one <tt>Mongo::DB</tt> in <tt>config/initializers/session_store.rb</tt> as in these examples:
+Provide one <tt>Mongo::DB</tt> instance in <tt>config/initializers/session_store.rb</tt> as in these examples:
 
 <b>MongoMapper example:</b>
-  AppName::Application.config.session_store :mongodb_session_store, :database => MongoMapper.database
+  AppName::Application.config.session_store :mongodb_session_store, :database => lambda { MongoMapper.database }
 
 <b>Mongoid example:</b>
-  AppName::Application.config.session_store :mongodb_session_store, :database => Mongoid.database
+  AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongoid.database }
 
 <b>Ruby driver example:</b>
-  AppName::Application.config.session_store :mongodb_session_store, :database => Mongo::Connection.new.db('db_name')
+  AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongo::Connection.new.db('db_name') }
 
 == Configuration Options
 
-Optionally use these additional parameters to customize the collection name and/or key names (default values shown):
+Optionally use these additional parameters to customize the collection name and/or key names (default values shown) or to configure garbage-collection:
 
 <b>Collection Name:</b>
   :collection => "sessions"
@@ -44,11 +46,14 @@ Optionally use these additional parameters to customize the collection name and/
 <b>Session Data Key:</b>
   :session_data_key => "session_data"
 
+<b>Session Expiration (default value of zero disables garbage-collection):</b>
+  :session_expiration => 0 # seconds
+
 == Rake Tasks
 
 To drop the MongoDB collection used for storing the Rails sessions for the current Rails.env (USE WITH CAUTION):
 
-  rake db:mongo:sessions:clear
+  $ rake db:mongo:sessions:clear
 
 == License
 

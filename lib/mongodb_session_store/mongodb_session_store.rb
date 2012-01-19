@@ -13,24 +13,28 @@ module ActionDispatch
           end
           
           def find_or_create_session(sid)
+            if expiration > 0
+              # TODO: ensure index for updated_at
+              coll.remove(:updated_at => { :$lte => Time.now - expiration })
+            end
             hash = { sid_key => sid }
             new(coll.find_one(hash) || hash)
           end
           
-          def db
-            @db ||= MongodbSessionStore.db
-          end
-          
           def coll
-            @coll ||= db.collection(MongodbSessionStore.coll)
+            MongodbSessionStore.db.collection(MongodbSessionStore.coll)
           end
           
           def sid_key
-            @sid_key ||= MongodbSessionStore.sid_key
+            MongodbSessionStore.sid_key
           end
           
           def data_key
-            @data_key ||= MongodbSessionStore.data_key
+            MongodbSessionStore.data_key
+          end
+          
+          def expiration
+            MongodbSessionStore.expiration
           end
           
         end
@@ -102,23 +106,26 @@ module ActionDispatch
       SESSION_RECORD_KEY      = 'rack.session.record'.freeze
       ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
       
-      cattr_reader :db, :coll, :sid_key, :data_key
+      cattr_reader :db, :coll, :sid_key, :data_key, :expiration
       
       def initialize(app, options = {})
         
-        @@db       =   options[:database]
-        @@coll     = ( options[:collection]       || 'sessions'     ).to_s
-        @@sid_key  = ( options[:session_id_key]   || 'session_id'   ).to_s
-        @@data_key = ( options[:session_data_key] || 'session_data' ).to_s
+        @@db         =   options[:database]
+        @@coll       = ( options[:collection]         || 'sessions'     ).to_s
+        @@sid_key    = ( options[:session_id_key]     || 'session_id'   ).to_s
+        @@data_key   = ( options[:session_data_key]   || 'session_data' ).to_s
+        @@expiration = ( options[:session_expiration] || 0              ).to_i
         
         class_name = self.class.name.split('::').last
         
+        @@db = @@db.call if @@db.is_a?(Proc)
+        
         unless @@db.is_a?(Mongo::DB)
           message = []
-          message << "#{class_name} [ERROR] Must provide one Mongo::DB in config/initializers/session_store.rb as in these examples:"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => MongoMapper.database"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => Mongoid.database"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => Mongo::Connection.new.db('db_name')"
+          message << "#{class_name} [ERROR] Must provide one Mongo::DB instance in config/initializers/session_store.rb as in these examples:"
+          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { MongoMapper.database }"
+          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongoid.database }"
+          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongo::Connection.new.db('db_name') }"
           raise message.join("\n")
         end
         

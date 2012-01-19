@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Christopher Fuller"]
   s.email       = ["git@chrisfuller.me"]
   s.homepage    = "http://github.com/chrisfuller/mongodb_session_store"
-  s.summary     = "Stores Rails sessions in a MongoDB collection. A MongoDB object mapper (ODM) is not required and the MongoDB collection name and key names are customizable. (keywords: mongo db mongodb database rails session sessions)"
-  s.description = "Stores Rails sessions in a MongoDB collection. A MongoDB object mapper (ODM) is not required and the MongoDB collection name and key names are customizable. (keywords: mongo db mongodb database rails session sessions)"
+  s.summary     = "Stores Rails sessions in a MongoDB collection. Clean code, thoughtful customization, optional garbage-collection. Use with or without a MongoDB object mapper (ODM).\n(keywords: mongo db mongodb database rails session sessions)"
+  s.description = "Stores Rails sessions in a MongoDB collection. Clean code, thoughtful customization, optional garbage-collection. Use with or without a MongoDB object mapper (ODM).\n(keywords: mongo db mongodb database rails session sessions)"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
 
