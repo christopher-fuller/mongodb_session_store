@@ -44,7 +44,7 @@ Optionally use these additional parameters to customize the collection name and/
 <b>Session Data Key:</b>
   :session_data_key => "session_data"
 
-<b>Session Expiration (in seconds):</b>
+<b>Session Expiration (for garbage-collection) [in seconds]:</b>
   :session_expiration => 0 # default value of zero disables garbage-collection
 
 == Rake Tasks
