@@ -1,7 +1,5 @@
 = MongoDBSessionStore
 
-== Description
-
 Stores Rails sessions in a MongoDB[http://mongodb.org/] collection. Clean code, thoughtful customization, optional garbage-collection. Use with or without a MongoDB object mapper (ODM).
 
 == Prerequisites
@@ -46,8 +44,8 @@ Optionally use these additional parameters to customize the collection name and/
 <b>Session Data Key:</b>
   :session_data_key => "session_data"
 
-<b>Session Expiration (default value of zero disables garbage-collection):</b>
-  :session_expiration => 0 # seconds
+<b>Session Expiration (in seconds):</b>
+  :session_expiration => 0 # default value of zero disables garbage-collection
 
 == Rake Tasks
 
