@@ -67,13 +67,12 @@ module ActionDispatch
               sid_key     => @sid,
               data_key    => @data
             )
-            @persisted = true
           end
         end
         
         def destroy
           unless destroyed?
-            coll.remove('_id' => @_id) if persisted?
+            coll.remove('_id' => @_id) if @_id
             freeze
             @destroyed = true
           end
@@ -91,10 +90,6 @@ module ActionDispatch
           
           def data_key
             self.class.data_key
-          end
-          
-          def persisted?
-            @persisted
           end
           
           def destroyed?
