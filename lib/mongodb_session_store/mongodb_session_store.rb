@@ -111,22 +111,20 @@ module ActionDispatch
         @@data_key   = ( options[:session_data_key]   || 'session_data' ).to_s
         @@expiration = ( options[:session_expiration] || 0              ).to_i
         
-        class_name = self.class.name.split('::').last
-        
         @@db = @@db.call if @@db.is_a?(Proc)
         
         unless @@db.is_a?(Mongo::DB)
-          raise "#{class_name} [ERROR] Must provide one Mongo::DB instance in config/initializers/session_store.rb"
+          raise_exception "Must provide one Mongo::DB instance in config/initializers/session_store.rb"
         end
         
         invalid_keys = ['_id', 'created_at', 'updated_at']
         
         if (invalid_keys + [@@data_key]).include?(@@sid_key)
-          raise "#{class_name} [ERROR] Invalid :session_id_key => #{@@sid_key}"
+          raise_exception "Invalid :session_id_key => #{@@sid_key}"
         end
         
         if (invalid_keys + [@@sid_key]).include?(@@data_key)
-          raise "#{class_name} [ERROR] Invalid :session_data_key => #{@@data_key}"
+          raise_exception "Invalid :session_data_key => #{@@data_key}"
         end
         
         super
@@ -134,6 +132,11 @@ module ActionDispatch
       end
       
       private
+        
+        def raise_exception(msg)
+          class_name = self.class.name.split('::').last
+          raise "#{class_name} [ERROR] #{msg}"
+        end
         
         def get_session(env, sid)
           sid ||= generate_sid
