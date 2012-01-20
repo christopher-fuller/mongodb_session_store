@@ -12,7 +12,7 @@ module ActionDispatch
             coll.drop
           end
           
-          def find_or_create_session(sid)
+          def find_or_create(sid)
             if expiration > 0
               # TODO: ensure index for updated_at
               coll.remove(:updated_at => { :$lte => Time.now - expiration })
@@ -158,14 +158,10 @@ module ActionDispatch
         
         def get_session_model(env, sid)
           if env[ENV_SESSION_OPTIONS_KEY][:id].nil?
-            env[SESSION_RECORD_KEY] = find_or_create_session(sid)
+            env[SESSION_RECORD_KEY] = Session.find_or_create(sid)
           else
-            env[SESSION_RECORD_KEY] ||= find_or_create_session(sid)
+            env[SESSION_RECORD_KEY] ||= Session.find_or_create(sid)
           end
-        end
-        
-        def find_or_create_session(sid)
-          Session.find_or_create_session(sid)
         end
         
     end
