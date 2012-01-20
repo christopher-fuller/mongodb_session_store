@@ -14,7 +14,7 @@ module ActionDispatch
           
           def find_or_create(sid)
             if expiration > 0
-              # TODO: ensure index for updated_at
+              coll.ensure_index([['updated_at', Mongo::ASCENDING]])
               coll.remove(:updated_at => { :$lte => Time.now - expiration })
             end
             hash = { sid_key => sid }
