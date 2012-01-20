@@ -116,12 +116,7 @@ module ActionDispatch
         @@db = @@db.call if @@db.is_a?(Proc)
         
         unless @@db.is_a?(Mongo::DB)
-          message = []
-          message << "#{class_name} [ERROR] Must provide one Mongo::DB instance in config/initializers/session_store.rb as in these examples:"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { MongoMapper.database }"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongoid.database }"
-          message << "AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongo::Connection.new.db('db_name') }"
-          raise message.join("\n")
+          raise "#{class_name} [ERROR] Must provide one Mongo::DB instance in config/initializers/session_store.rb"
         end
         
         invalid_keys = ['_id', 'created_at', 'updated_at']
