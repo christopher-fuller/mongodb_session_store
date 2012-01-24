@@ -3,7 +3,7 @@ PATH
   specs:
     mongodb_session_store (0.0.7)
       mongo
-      rails (~> 3.1.3)
+      rails (>= 3.1)
 
 GEM
   remote: http://rubygems.org/
