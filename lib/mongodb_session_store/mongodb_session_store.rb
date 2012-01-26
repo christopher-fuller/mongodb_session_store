@@ -155,11 +155,13 @@ module ActionDispatch
       end
       
       def destroy_session(env, sid, options)
-        Base.silence do
-          get_session_model(env, sid).destroy
-          env[SESSION_RECORD_KEY] = nil
-          generate_sid unless options[:drop]
+        if sid = current_session_id(env)
+          Base.silence do
+            get_session_model(env, sid).destroy
+            env[SESSION_RECORD_KEY] = nil
+          end
         end
+        generate_sid unless options[:drop]
       end
       
       def get_session_model(env, sid)
