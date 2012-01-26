@@ -158,7 +158,7 @@ module ActionDispatch
           Base.silence do
             get_session_model(env, sid).destroy
             env[SESSION_RECORD_KEY] = nil
-            generate_sid # TODO: determine if 'generate_sid' is really needed here, or remove
+            generate_sid unless options[:drop]
           end
         end
         
