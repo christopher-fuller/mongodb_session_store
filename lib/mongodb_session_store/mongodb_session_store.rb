@@ -79,23 +79,23 @@ module ActionDispatch
         end
         
         private
-          
-          def coll
-            self.class.coll
-          end
-          
-          def sid_key
-            self.class.sid_key
-          end
-          
-          def data_key
-            self.class.data_key
-          end
-          
-          def destroyed?
-            @destroyed
-          end
-          
+        
+        def coll
+          self.class.coll
+        end
+        
+        def sid_key
+          self.class.sid_key
+        end
+        
+        def data_key
+          self.class.data_key
+        end
+        
+        def destroyed?
+          @destroyed
+        end
+        
       end
       
       SESSION_RECORD_KEY      = 'rack.session.record'.freeze
@@ -132,44 +132,44 @@ module ActionDispatch
       end
       
       private
-        
-        def raise_exception(msg)
-          class_name = self.class.name.split('::').last
-          raise "#{class_name} [ERROR] #{msg}"
+      
+      def raise_exception(msg)
+        class_name = self.class.name.split('::').last
+        raise "#{class_name} [ERROR] #{msg}"
+      end
+      
+      def get_session(env, sid)
+        Base.silence do
+          sid ||= generate_sid
+          session = get_session_model(env, sid)
+          [sid, session.data]
         end
-        
-        def get_session(env, sid)
-          Base.silence do
-            sid ||= generate_sid
-            session = get_session_model(env, sid)
-            [sid, session.data]
-          end
+      end
+      
+      def set_session(env, sid, data, options)
+        Base.silence do
+          session = get_session_model(env, sid)
+          session.data = data
+          session.save ? sid : false
         end
-        
-        def set_session(env, sid, data, options)
-          Base.silence do
-            session = get_session_model(env, sid)
-            session.data = data
-            session.save ? sid : false
-          end
+      end
+      
+      def destroy_session(env, sid, options)
+        Base.silence do
+          get_session_model(env, sid).destroy
+          env[SESSION_RECORD_KEY] = nil
+          generate_sid unless options[:drop]
         end
-        
-        def destroy_session(env, sid, options)
-          Base.silence do
-            get_session_model(env, sid).destroy
-            env[SESSION_RECORD_KEY] = nil
-            generate_sid unless options[:drop]
-          end
+      end
+      
+      def get_session_model(env, sid)
+        if env[ENV_SESSION_OPTIONS_KEY][:id].nil?
+          env[SESSION_RECORD_KEY] = Session.find_or_create(sid)
+        else
+          env[SESSION_RECORD_KEY] ||= Session.find_or_create(sid)
         end
-        
-        def get_session_model(env, sid)
-          if env[ENV_SESSION_OPTIONS_KEY][:id].nil?
-            env[SESSION_RECORD_KEY] = Session.find_or_create(sid)
-          else
-            env[SESSION_RECORD_KEY] ||= Session.find_or_create(sid)
-          end
-        end
-        
+      end
+      
     end
   end
 end
