@@ -1,6 +1,6 @@
 = mongodb_session_store
 
-Stores Rails sessions in a MongoDB[http://mongodb.org/] collection with configurable options including optional garbage-collection. Use with or without a MongoDB object mapper (ODM).
+Stores Rails sessions in a MongoDB[http://mongodb.org/] collection with configurable options including garbage-collection. Use with or without a MongoDB object mapper (ODM).
 
 == Prerequisites
 
@@ -33,7 +33,7 @@ Provide one <tt>Mongo::DB</tt> instance in <tt>config/initializers/session_store
 
 == Configuration Options
 
-Optionally use these additional parameters to customize the collection name and/or key names (default values shown) or to configure garbage-collection:
+Optionally use these additional parameters to customize the collection name or key names, or to configure garbage-collection (default values shown):
 
 <b>Collection Name:</b>
   :collection => "sessions"
@@ -44,8 +44,11 @@ Optionally use these additional parameters to customize the collection name and/
 <b>Session Data Key:</b>
   :session_data_key => "session_data"
 
-<b>Session Expiration (for garbage-collection) [in seconds]:</b>
-  :session_expiration => 0 # default value of zero disables garbage-collection
+<b>Garbage-Collection [in seconds]:</b>
+  :gc_created_at => 0 # set to garbage-collect sessions some time after they were created
+  :gc_updated_at => 0 # set to garbage-collect sessions some time after they were last updated
+
+Note: default zero values disable garbage-collection.
 
 == Rake Tasks
 

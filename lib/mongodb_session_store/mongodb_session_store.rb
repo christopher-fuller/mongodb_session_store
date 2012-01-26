@@ -13,9 +13,13 @@ module ActionDispatch
           end
           
           def find_or_create(sid)
-            if expiration > 0
+            if gc_created_at > 0
+              coll.ensure_index([['created_at', Mongo::ASCENDING]])
+              coll.remove(:created_at => { :$lte => Time.now - gc_created_at })
+            end
+            if gc_updated_at > 0
               coll.ensure_index([['updated_at', Mongo::ASCENDING]])
-              coll.remove(:updated_at => { :$lte => Time.now - expiration })
+              coll.remove(:updated_at => { :$lte => Time.now - gc_updated_at })
             end
             coll.ensure_index([[sid_key, Mongo::ASCENDING]])
             hash = { sid_key => sid }
@@ -34,8 +38,12 @@ module ActionDispatch
             MongodbSessionStore.data_key
           end
           
-          def expiration
-            MongodbSessionStore.expiration
+          def gc_created_at
+            MongodbSessionStore.gc_created_at
+          end
+          
+          def gc_updated_at
+            MongodbSessionStore.gc_updated_at
           end
           
         end
@@ -102,15 +110,16 @@ module ActionDispatch
       SESSION_RECORD_KEY      = 'rack.session.record'.freeze
       ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
       
-      cattr_reader :db, :coll, :sid_key, :data_key, :expiration
+      cattr_reader :db, :coll, :sid_key, :data_key, :gc_created_at, :gc_updated_at
       
       def initialize(app, options = {})
         
-        @@db         =   options[:database]
-        @@coll       = ( options[:collection]         || 'sessions'     ).to_s
-        @@sid_key    = ( options[:session_id_key]     || 'session_id'   ).to_s
-        @@data_key   = ( options[:session_data_key]   || 'session_data' ).to_s
-        @@expiration = ( options[:session_expiration] || 0              ).to_i
+        @@db            =   options[:database]
+        @@coll          = ( options[:collection]       || 'sessions'     ).to_s
+        @@sid_key       = ( options[:session_id_key]   || 'session_id'   ).to_s
+        @@data_key      = ( options[:session_data_key] || 'session_data' ).to_s
+        @@gc_created_at = ( options[:gc_created_at]    || 0              ).to_i
+        @@gc_updated_at = ( options[:gc_updated_at]    || 0              ).to_i
         
         @@db = @@db.call if @@db.is_a?(Proc)
         
