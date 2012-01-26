@@ -139,21 +139,27 @@ module ActionDispatch
         end
         
         def get_session(env, sid)
-          sid ||= generate_sid
-          session = get_session_model(env, sid)
-          [sid, session.data]
+          Base.silence do
+            sid ||= generate_sid
+            session = get_session_model(env, sid)
+            [sid, session.data]
+          end
         end
         
         def set_session(env, sid, data, options)
-          session = get_session_model(env, sid)
-          session.data = data
-          session.save ? sid : false
+          Base.silence do
+            session = get_session_model(env, sid)
+            session.data = data
+            session.save ? sid : false
+          end
         end
         
         def destroy_session(env, sid, options)
-          get_session_model(env, sid).destroy
-          env[SESSION_RECORD_KEY] = nil
-          generate_sid # TODO: determine if 'generate_sid' is really needed here, or remove
+          Base.silence do
+            get_session_model(env, sid).destroy
+            env[SESSION_RECORD_KEY] = nil
+            generate_sid # TODO: determine if 'generate_sid' is really needed here, or remove
+          end
         end
         
         def get_session_model(env, sid)
