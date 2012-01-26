@@ -78,7 +78,7 @@ module ActionDispatch
           end
         end
         
-        protected
+        private
           
           def coll
             self.class.coll
@@ -131,7 +131,7 @@ module ActionDispatch
         
       end
       
-      protected
+      private
         
         def raise_exception(msg)
           class_name = self.class.name.split('::').last
