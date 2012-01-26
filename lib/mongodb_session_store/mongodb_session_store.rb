@@ -17,6 +17,7 @@ module ActionDispatch
               coll.ensure_index([['updated_at', Mongo::ASCENDING]])
               coll.remove(:updated_at => { :$lte => Time.now - expiration })
             end
+            coll.ensure_index([[sid_key, Mongo::ASCENDING]])
             hash = { sid_key => sid }
             new(coll.find_one(hash) || hash)
           end
