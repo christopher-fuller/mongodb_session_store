@@ -4,7 +4,7 @@ A gem for storing Rails sessions in a MongoDB[http://mongodb.org/] collection wi
 
 == Prerequisites
 
-Rails must already be configured for MongoDB. Using an object mapper (ODM), such as MongoMapper[http://mongomapper.com/] or Mongoid[http://mongoid.org/], is entirely optional.
+Rails must already be configured for MongoDB. Using an object mapper (ODM), such as Mongoid[http://mongoid.org/] or MongoMapper[http://mongomapper.com/], is entirely optional.
 
 == Installation
 
@@ -22,11 +22,11 @@ Add to Gemfile:
 
 Provide one <tt>Mongo::DB</tt> instance in <tt>config/initializers/session_store.rb</tt> as in these examples:
 
+<b>Mongoid example:</b>
+  AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongoid.master }
+
 <b>MongoMapper example:</b>
   AppName::Application.config.session_store :mongodb_session_store, :database => lambda { MongoMapper.database }
-
-<b>Mongoid example:</b>
-  AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongoid.database }
 
 <b>Ruby driver example:</b>
   AppName::Application.config.session_store :mongodb_session_store, :database => lambda { Mongo::Connection.new.db('db_name') }
@@ -56,10 +56,6 @@ To drop the MongoDB collection used for storing the Rails sessions for the curre
 
   $ rake db:mongo:sessions:clear
 
-== License
-
-See MIT-LICENSE for details.
-
 == Copyright
 
-Copyright (c) 2012 Christopher Fuller.
+Copyright (c) 2012 Christopher Fuller. See MIT-LICENSE for details.
