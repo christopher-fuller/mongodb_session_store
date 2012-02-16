@@ -14,20 +14,20 @@ module ActionDispatch
           
           def find_or_create(sid)
             if gc_created_at > 0
-              coll.ensure_index([['created_at', Mongo::ASCENDING]])
-              coll.remove(:created_at => { :$lte => Time.now - gc_created_at })
+              coll.ensure_index [['created_at', Mongo::ASCENDING]]
+              coll.remove :created_at => { :$lte => Time.now - gc_created_at }
             end
             if gc_updated_at > 0
-              coll.ensure_index([['updated_at', Mongo::ASCENDING]])
-              coll.remove(:updated_at => { :$lte => Time.now - gc_updated_at })
+              coll.ensure_index [['updated_at', Mongo::ASCENDING]]
+              coll.remove :updated_at => { :$lte => Time.now - gc_updated_at }
             end
-            coll.ensure_index([[sid_key, Mongo::ASCENDING]])
+            coll.ensure_index [[sid_key, Mongo::ASCENDING]]
             hash = { sid_key => sid }
             new(coll.find_one(hash) || hash)
           end
           
           def coll
-            MongodbSessionStore.db.collection(MongodbSessionStore.coll)
+            MongodbSessionStore.db.collection MongodbSessionStore.coll
           end
           
           def sid_key
@@ -121,19 +121,19 @@ module ActionDispatch
         @@gc_created_at = ( options[:gc_created_at]    || 0              ).to_i
         @@gc_updated_at = ( options[:gc_updated_at]    || 0              ).to_i
         
-        @@db = @@db.call if @@db.is_a?(Proc)
+        @@db = @@db.call if @@db.is_a? Proc
         
-        unless @@db.is_a?(Mongo::DB)
+        unless @@db.is_a? Mongo::DB
           raise_exception "Must provide one Mongo::DB instance in config/initializers/session_store.rb"
         end
         
         invalid_keys = ['_id', 'created_at', 'updated_at']
         
-        if (invalid_keys + [@@data_key]).include?(@@sid_key)
+        if (invalid_keys + [@@data_key]).include? @@sid_key
           raise_exception "Invalid :session_id_key => #{@@sid_key}"
         end
         
-        if (invalid_keys + [@@sid_key]).include?(@@data_key)
+        if (invalid_keys + [@@sid_key]).include? @@data_key
           raise_exception "Invalid :session_data_key => #{@@data_key}"
         end
         
@@ -149,36 +149,30 @@ module ActionDispatch
       end
       
       def get_session(env, sid)
-        Base.silence do
-          sid ||= generate_sid
-          session = get_session_model(env, sid)
-          [sid, session.data]
-        end
+        sid ||= generate_sid
+        session = get_session_model env, sid
+        [sid, session.data]
       end
       
       def set_session(env, sid, data, options)
-        Base.silence do
-          session = get_session_model(env, sid)
-          session.data = data
-          session.save ? sid : false
-        end
+        session = get_session_model env, sid
+        session.data = data
+        session.save ? sid : false
       end
       
       def destroy_session(env, sid, options)
         if sid = current_session_id(env)
-          Base.silence do
-            get_session_model(env, sid).destroy
-            env[SESSION_RECORD_KEY] = nil
-          end
+          get_session_model(env, sid).destroy
+          env[SESSION_RECORD_KEY] = nil
         end
         generate_sid unless options[:drop]
       end
       
       def get_session_model(env, sid)
         if env[ENV_SESSION_OPTIONS_KEY][:id].nil?
-          env[SESSION_RECORD_KEY] = Session.find_or_create(sid)
+          env[SESSION_RECORD_KEY] = Session.find_or_create sid
         else
-          env[SESSION_RECORD_KEY] ||= Session.find_or_create(sid)
+          env[SESSION_RECORD_KEY] ||= Session.find_or_create sid
         end
       end
       
