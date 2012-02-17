@@ -48,7 +48,7 @@ Optionally use these additional parameters to customize the collection name or k
   :gc_created_at => 0 # set to garbage-collect sessions some time after they were created
   :gc_updated_at => 0 # set to garbage-collect sessions some time after they were last updated
 
-Note: default zero values disable garbage-collection.
+NOTE: Default zero values disable garbage-collection.
 
 == Rake Tasks
 
