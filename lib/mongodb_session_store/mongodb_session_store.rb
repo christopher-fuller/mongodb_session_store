@@ -145,7 +145,7 @@ module ActionDispatch
       
       def raise_exception(msg)
         class_name = self.class.name.split('::').last
-        raise "#{class_name} [ERROR] #{msg}"
+        raise ArgumentError, "#{class_name} [ERROR] #{msg}", caller
       end
       
       def get_session(env, sid)
