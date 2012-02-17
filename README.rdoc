@@ -4,7 +4,7 @@ A gem for storing Rails sessions in a MongoDB[http://mongodb.org/] collection wi
 
 == Prerequisites
 
-Rails must already be configured for MongoDB. Using an object mapper (ODM), such as Mongoid[http://mongoid.org/] or MongoMapper[http://mongomapper.com/], is entirely optional.
+Rails must be configured for MongoDB. Using an object mapper (ODM), such as Mongoid[http://mongoid.org/] or MongoMapper[http://mongomapper.com/], is entirely optional.
 
 == Installation
 
@@ -16,7 +16,7 @@ Rails must already be configured for MongoDB. Using an object mapper (ODM), such
 
 Add to Gemfile:
 
-  gem "mongodb_session_store"
+  gem 'mongodb_session_store'
 
 <em>Step 2) Specify database</em>
 
@@ -36,13 +36,13 @@ Provide one <tt>Mongo::DB</tt> instance in <tt>config/initializers/session_store
 Optionally use these additional parameters to customize the collection name or key names, or to configure garbage-collection (default values shown):
 
 <b>Collection Name:</b>
-  :collection => "sessions"
+  :collection => 'sessions'
 
 <b>Session ID Key:</b>
-  :session_id_key => "session_id"
+  :session_id_key => 'session_id'
 
 <b>Session Data Key:</b>
-  :session_data_key => "session_data"
+  :session_data_key => 'session_data'
 
 <b>Garbage-Collection [in seconds]:</b>
   :gc_created_at => 0 # set to garbage-collect sessions some time after they were created
