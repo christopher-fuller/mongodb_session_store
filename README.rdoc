@@ -58,4 +58,4 @@ To drop the MongoDB collection used for storing the Rails sessions for the curre
 
 == Copyright
 
-Copyright (c) 2012 Christopher Fuller. See MIT-LICENSE for details.
+Copyright (c) 2012 Christopher Fuller. See MIT-LICENSE[http://github.com/chrisfuller/mongodb_session_store/blob/master/MIT-LICENSE] for details.
